@@ -29,4 +29,17 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     startCameraStream();
 } else {
     alert('Your browser does not support camera access.');
-}
+}navigator.mediaDevices.getUserMedia({
+    video: {
+        width: { ideal: 640 },  // 해상도를 낮추어 설정
+        height: { ideal: 480 },
+        facingMode: 'user'  // 'environment'를 사용해 후면 카메라로 전환 가능
+    }
+})
+.then((stream) => {
+    const videoElement = document.getElementById('cameraStream');
+    videoElement.srcObject = stream;
+})
+.catch((error) => {
+    console.error('Camera access error:', error);
+});

@@ -52,20 +52,30 @@
     </video>
 
     <script>
-        // 카메라 스트림을 가져오는 코드
+        // 비디오 요소와 버튼 요소 선택
         const videoElement = document.getElementById('cameraStream');
         const startCameraButton = document.getElementById('startCamera');
 
+        // 버튼 클릭으로 카메라 스트림 시작
         startCameraButton.addEventListener('click', () => {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ video: true })
-                    .then((stream) => {
-                        videoElement.srcObject = stream;
-                        startCameraButton.style.display = 'none'; // 버튼 숨기기
-                    })
-                    .catch((error) => {
-                        console.error('Error accessing camera:', error);
-                    });
+                navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 640 },  // 모바일 환경 최적화를 위한 해상도 설정
+                        height: { ideal: 480 },
+                        facingMode: 'user'      // 전면 카메라 ('environment'는 후면 카메라)
+                    }
+                })
+                .then((stream) => {
+                    // 카메라 스트림을 비디오 요소에 연결
+                    videoElement.srcObject = stream;
+                    startCameraButton.style.display = 'none';  // 버튼 숨기기
+                })
+                .catch((error) => {
+                    // 카메라 접근 실패 시 처리
+                    console.error('Error accessing camera:', error);
+                    alert('Camera access was denied or an error occurred. Please check your permissions.');
+                });
             } else {
                 alert('Your browser does not support camera access.');
             }
