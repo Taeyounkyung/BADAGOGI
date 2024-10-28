@@ -1,0 +1,16 @@
+#cameraStream, #fishLayer, #waveLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;  /* 전체 화면을 채우는 크기 */
+    height: 100vh;
+    object-fit: cover;  /* 영상이 비율을 유지하면서 화면을 채우게 */
+}
+
+#waveLayer {
+    mix-blend-mode: overlay;  /* 오버레이 방식으로 물결무늬 적용 */
+    opacity: 0.7;  /* 물결무늬가 너무 강하지 않도록 투명도 조정 */
+}
+#fishLayer, #waveLayer {
+    will-change: transform;
+}

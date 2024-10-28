@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layered Video App</title>
+    <style>
+        /* 레이어들이 쌓이도록 position을 절대값으로 설정 */
+        #cameraStream, #fishLayer, #waveLayer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover; /* 영상이 화면에 꽉 차게 */
+        }
+
+        #waveLayer {
+            mix-blend-mode: overlay; /* 오버레이 효과 */
+        }
+
+        #startCamera {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <!-- 카메라 시작 버튼 -->
+    <button id="startCamera">Start Camera</button>
+
+    <!-- 실시간 카메라 영상 -->
+    <video id="cameraStream" autoplay playsinline muted></video>
+
+    <!-- 물고기 애니메이션 영상 -->
+    <video id="fishLayer" autoplay loop muted>
+        <source src="assets/Fish.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- 물결무늬 영상 -->
+    <video id="waveLayer" autoplay loop muted>
+        <source src="assets/wave.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <script>
+        // 카메라 스트림을 가져오는 코드
+        const videoElement = document.getElementById('cameraStream');
+        const startCameraButton = document.getElementById('startCamera');
+
+        startCameraButton.addEventListener('click', () => {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then((stream) => {
+                        videoElement.srcObject = stream;
+                        startCameraButton.style.display = 'none'; // 버튼 숨기기
+                    })
+                    .catch((error) => {
+                        console.error('Error accessing camera:', error);
+                    });
+            } else {
+                alert('Your browser does not support camera access.');
+            }
+        });
+    </script>
+</body>
+</html>
