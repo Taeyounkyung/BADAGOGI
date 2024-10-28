@@ -1,45 +1,46 @@
-// 카메라 스트림 연결
-const videoElement = document.getElementById('cameraStream');
+import React, { useEffect } from 'react';
 
-// 카메라 접근 요청 함수
-function startCameraStream() {
-    // 해상도 설정 포함한 카메라 접근 요청
-    navigator.mediaDevices.getUserMedia({
-        video: {
-            width: { ideal: 1280 },  // 해상도 설정 (최적화된 값 사용)
-            height: { ideal: 720 },
-            facingMode: 'user'        // 전면 카메라 (후면은 'environment')
+function CameraComponent() {
+    useEffect(() => {
+        // 비디오 요소 선택
+        const videoElement = document.getElementById('cameraStream');
+
+        // 카메라 접근 요청 함수
+        function startCameraStream() {
+            navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { ideal: 640 },  // 모바일 환경 최적화를 위한 해상도 설정
+                    height: { ideal: 480 },
+                    facingMode: 'user'      // 전면 카메라 ('environment'는 후면 카메라)
+                }
+            })
+            .then((stream) => {
+                // 카메라 스트림을 비디오 요소에 연결
+                videoElement.srcObject = stream;
+                document.getElementById('startCamera').style.display = 'none';  // 버튼 숨기기
+                console.log("Camera stream started successfully.");  // 카메라 시작 로그
+            })
+            .catch((error) => {
+                // 카메라 접근 실패 시 처리
+                console.error('Error accessing camera:', error);
+                alert('Camera access was denied or an error occurred. Please check your permissions.');
+            });
         }
-    })
-    .then((stream) => {
-        // 카메라 스트림을 비디오 요소에 연결
-        videoElement.srcObject = stream;
-    })
-    .catch((error) => {
-        // 카메라 접근 실패 시 처리
-        console.error('Error accessing camera:', error);
 
-        // 사용자에게 접근 실패 알림
-        alert('Camera access was denied or an error occurred. Please check your permissions.');
-    });
+        // MediaDevices API 지원 여부 확인 후 버튼 클릭으로 카메라 시작
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            document.getElementById('startCamera').addEventListener('click', startCameraStream);
+        } else {
+            alert('Your browser does not support camera access.');
+        }
+    }, []);
+
+    return (
+        <>
+            <button id="startCamera">Start Camera</button>
+            <video id="cameraStream" autoPlay playsInline muted></video>
+        </>
+    );
 }
 
-// 브라우저가 MediaDevices API를 지원하는지 확인
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    startCameraStream();
-} else {
-    alert('Your browser does not support camera access.');
-}navigator.mediaDevices.getUserMedia({
-    video: {
-        width: { ideal: 640 },  // 해상도를 낮추어 설정
-        height: { ideal: 480 },
-        facingMode: 'user'  // 'environment'를 사용해 후면 카메라로 전환 가능
-    }
-})
-.then((stream) => {
-    const videoElement = document.getElementById('cameraStream');
-    videoElement.srcObject = stream;
-})
-.catch((error) => {
-    console.error('Camera access error:', error);
-});
+export default CameraComponent;
